@@ -57,24 +57,30 @@ let activeUsers=[]
 io.on("connection", (socket) => {
   global.chatSocket = socket;
   socket.on("add-user", (userId) => {
+    console.log(userId)
     onlineUsers.set(userId, socket.id);
-    if(!activeUsers.some((user)=>user.userId===userId)){
-
-      activeUsers.push({userId:userId,socketId:socket.id})
+    if (userId !== "") { // Check if userId is not empty
+        if (!activeUsers.some((user) => user.userId === userId)) {
+            activeUsers.push({ userId: userId, socketId: socket.id });
+        }
     }
-    io.emit("get-users",activeUsers)
-  });
+    io.emit("get-users", activeUsers);
+});
+
 
 socket.on("disconnect",()=>{
   activeUsers=activeUsers.filter((user)=>user.socketId !==socket.id)
   io.emit("get-users",activeUsers)
 })
 
-  socket.on("send-msg", (data) => {
-    // console.log(data,"mybf");
-    const sendUserSocket = onlineUsers.get(data.to);
-    if (sendUserSocket) {
-      socket.to(sendUserSocket).emit("msg-recieve", data.messagetext,data.messageid);
-    }
-  });
+socket.on("send-msg", (data) => {
+  const sendUserSocket = onlineUsers.get(data.to);
+  if (sendUserSocket) {
+      console.log(data, data.to, sendUserSocket);
+      io.to(sendUserSocket).emit("msg-recieve", data.messagetext, data.messageid);
+  } else {
+      console.log(`User with ID ${data.to} is not online.`);
+      // Handle the case where the user is not online
+  }
+});
 });
