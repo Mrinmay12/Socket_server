@@ -3,11 +3,12 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import { Server } from "socket.io";
-
+import connectDB from './Database.js';
+import { Userdetails } from "./Utils.js";
 dotenv.config()
 const app=express()
 const PORT=process.env.PORT 
-app.use(bodyParser.urlencoded({extended:true}))
+app.use(bodyParser.urlencoded({extended:true})) 
 // app.use(bodyParser.json())
 app.use(bodyParser.json({ limit: '10mb' }))
 app.use(cors())
@@ -21,20 +22,11 @@ app.use((req, res, next) => {
   app.get("/",(req,res)=>{
     res.send("Welcome to Socket server")
 })
-// const start =async()=>{
-//     try{
-// await connectDB()
-// app.listen(PORT,()=>{  
-//     console.log("App start "+PORT)
 
-// })
-
-//     }catch(err){console.log(err)}
-// }
 
 const start =async()=>{
     try{
-// await connectDB()
+await connectDB()
 
     }catch(err){console.log(err)}
 }
