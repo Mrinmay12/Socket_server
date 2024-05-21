@@ -106,6 +106,18 @@ if(Object.keys(location).length !== 0){
     io.emit("nearUsers", nearUsersdata);
   });
 
+
+        
+   //notification
+   socket.on("send-notification", (data) => {
+    console.log(data);
+    if(data.profile){
+      io.emit("recive-notification",data); 
+    }
+      })
+ //notification end
+
+    
 socket.on("disconnect",()=>{
   activeUsers=activeUsers.filter((user)=>user.socketId !==socket.id)
   io.emit("get-users",activeUsers)
